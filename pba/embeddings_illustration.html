@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedding 3D - Démonstration Interactive</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-height: 80px;
+            margin-bottom: 15px;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        .subtitle {
+            color: #666;
+            font-style: italic;
+            font-size: 18px;
+            margin-top: 8px;
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #plot {
+            width: 100%;
+            height: 700px;
+        }
+        .controls {
+            width: 100%;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .controls-row {
+            display: grid;
+            grid-template-columns: 2fr 3fr 2fr;
+            gap: 20px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+        .coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        .coordinates input {
+            text-align: center;
+            font-weight: bold;
+        }
+        .coordinate-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .word-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background: white;
+        }
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .word-item:last-child {
+            border-bottom: none;
+        }
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .explanation {
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #17a2b8;
+            margin-top: 20px;
+        }
+        .explanation h3 {
+            color: #17a2b8;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .explanation ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .controls-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .coordinates {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://vetoswvwgsebhxetqppa.supabase.co/storage/v1/object/public/images//full-logo-dark.png" alt="Jaydai Logo" class="logo">
+            <h1>🎯 Démonstration Interactive - Embeddings 3D</h1>
+            <p class="subtitle">Formation PBA 23 mai 2025</p>
+        </div>
+        
+        <div class="main-content">
+            <div id="plot"></div>
+            
+            <div class="controls">
+                <div class="controls-row">
+                    <div class="input-group">
+                        <label for="word-input">Mot :</label>
+                        <input type="text" id="word-input" placeholder="Ex: maison, voiture...">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Coordonnées:</label>
+                        <div class="coordinates">
+                            <div>
+                                <div class="coordinate-label">Chat</div>
+                                <input type="number" id="x-input" min="0" max="1" step="0.1" value="0.5">
+                            </div>
+                            <div>
+                                <div class="coordinate-label">Enfant</div>
+                                <input type="number" id="y-input" min="0" max="1" step="0.1" value="0.5">
+                            </div>
+                            <div>
+                                <div class="coordinate-label">Adulte</div>
+                                <input type="number" id="z-input" min="0" max="1" step="0.1" value="0.5">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary" onclick="addWord()">🎯 Ajouter</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="flex: 2;">
+                        <h4>📝 Mots actuels :</h4>
+                        <div class="word-list" id="word-list">
+                            <!-- Les mots seront ajoutés ici dynamiquement -->
+                        </div>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <h4>&nbsp;</h4>
+                        <button class="btn btn-danger" onclick="clearAll()" style="width: 100%;">
+                            🗑️ Tout effacer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-dot" style="background-color: #4A90E2;"></div>
+                <span>Points ajoutés</span>
+            </div>
+        </div>
+
+        <div class="explanation">
+            <h3>💡 Comprendre les Embeddings</h3>
+            <p>Les embeddings sont des <span class="highlight">représentations numériques de mots ou concepts</span> dans un espace vectoriel multidimensionnel. Chaque mot devient un point dans cet espace, où la position encode sa signification sémantique.</p>
+            
+            <p><strong>🎯 Principes clés des embeddings :</strong></p>
+            <ul>
+                <li><strong>Proximité sémantique :</strong> Les mots similaires sont proches dans l'espace ("chien" et "chiot")</li>
+                <li><strong>Relations conceptuelles :</strong> Une direction vectorielle peut représenter une relation logique ou analogique. Exemple célèbre : roi - homme + femme ≈ reine</li>
+                <li><strong>Dimensions sémantiques :</strong> Chaque axe peut représenter un concept (Chat, Enfant, Adulte)</li>
+                <li><strong>Apprentissage automatique :</strong> Ces positions sont apprises à partir de grandes quantités de texte</li>
+            </ul>
+
+            <p><strong>🚀 Applications pratiques :</strong> Les embeddings permettent aux IA de comprendre les nuances du langage, faire des analogies, et traiter des mots jamais vus en les positionnant près de mots similaires connus !</p>
+        </div>
+    </div>
+
+    <script>
+        // Données initiales
+        let data = [
+            {word: 'chien', x: 0.4, y: 0.3, z: 0.6},
+            {word: 'chaton', x: 0.7, y: 0.5, z: 0.1},
+            {word: 'enfant', x: 0, y: 1, z: 0},
+        ];
+
+        // Couleur unique pour tous les points
+        const pointColor = '#4A90E2';
+
+        // Fonction pour mettre à jour le graphique
+        function updatePlot() {
+            const trace = {
+                x: data.map(d => d.x),
+                y: data.map(d => d.y),
+                z: data.map(d => d.z),
+                mode: 'markers+text',
+                type: 'scatter3d',
+                text: data.map(d => d.word),
+                textposition: 'top center',
+                textfont: {
+                    size: 16,
+                    color: '#333'
+                },
+                marker: {
+                    size: 10,
+                    color: pointColor,
+                    line: {
+                        color: '#333',
+                        width: 1
+                    },
+                    opacity: 0.8
+                },
+                hovertemplate: '<b>%{text}</b><br>' +
+                              'Chat: %{x}<br>' +
+                              'Enfant: %{y}<br>' +
+                              'Adulte: %{z}<br>' +
+                              '<extra></extra>'
+            };
+
+            const layout = {
+                scene: {
+                    xaxis: {
+                        title: 'Dimension Chat',
+                        titlefont: {size: 12},
+                        range: [-0.1, 1.1]
+                    },
+                    yaxis: {
+                        title: 'Dimension Enfant',
+                        titlefont: {size: 12},
+                        range: [-0.1, 1.1]
+                    },
+                    zaxis: {
+                        title: 'Dimension Adulte',
+                        titlefont: {size: 12},
+                        range: [-0.1, 1.1]
+                    },
+                    camera: {
+                        eye: {x: 1.2, y: 1.2, z: 0.6}
+                    }
+                },
+                margin: {l: 0, r: 0, b: 0, t: 0},
+                paper_bgcolor: 'white',
+                plot_bgcolor: 'white'
+            };
+
+            const config = {
+                displayModeBar: true,
+                modeBarButtonsToRemove: ['pan2d', 'lasso2d'],
+                displaylogo: false,
+                responsive: true
+            };
+
+            Plotly.react('plot', [trace], layout, config);
+            updateWordList();
+        }
+
+        // Fonction pour ajouter un mot
+        function addWord() {
+            const word = document.getElementById('word-input').value.trim();
+            const x = parseFloat(document.getElementById('x-input').value);
+            const y = parseFloat(document.getElementById('y-input').value);
+            const z = parseFloat(document.getElementById('z-input').value);
+
+            if (!word) {
+                alert('⚠️ Veuillez entrer un mot');
+                return;
+            }
+
+            if (data.some(d => d.word.toLowerCase() === word.toLowerCase())) {
+                alert('⚠️ Ce mot existe déjà');
+                return;
+            }
+
+            if (isNaN(x) || isNaN(y) || isNaN(z)) {
+                alert('⚠️ Veuillez entrer des coordonnées valides');
+                return;
+            }
+
+            data.push({word, x, y, z});
+            updatePlot();
+
+            // Réinitialiser le formulaire
+            document.getElementById('word-input').value = '';
+            document.getElementById('x-input').value = '0.5';
+            document.getElementById('y-input').value = '0.5';
+            document.getElementById('z-input').value = '0.5';
+        }
+
+        // Fonction pour supprimer un mot
+        function removeWord(word) {
+            data = data.filter(d => d.word !== word);
+            updatePlot();
+        }
+
+        // Fonction pour mettre à jour la liste des mots
+        function updateWordList() {
+            const wordList = document.getElementById('word-list');
+            wordList.innerHTML = '';
+
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerHTML = `
+                    <span>
+                        <div class="color-dot" style="background-color: ${pointColor};"></div>
+                        <strong>${item.word}</strong> (Chat: ${item.x}, Enfant: ${item.y}, Adulte: ${item.z})
+                    </span>
+                    <button class="btn btn-danger" onclick="removeWord('${item.word}')">✖</button>
+                `;
+                wordList.appendChild(div);
+            });
+        }
+
+        // Fonction pour tout effacer
+        function clearAll() {
+            if (confirm('🗑️ Êtes-vous sûr de vouloir supprimer tous les mots ?')) {
+                data = [];
+                updatePlot();
+            }
+        }
+
+        // Permettre l'ajout avec la touche Entrée
+        document.getElementById('word-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addWord();
+            }
+        });
+
+        // Initialisation
+        updatePlot();
+    </script>
+</body>
+</html>
