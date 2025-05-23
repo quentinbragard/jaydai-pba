@@ -239,16 +239,8 @@
                         <strong>Méthode 1</strong><br>
                         <small>Séparation stricte</small>
                     </button>
-                    <button class="method-btn" onclick="selectMethod(2)" id="method-2">
-                        <strong>Méthode 2</strong><br>
-                        <small>Ponctuation attachée</small>
-                    </button>
-                    <button class="method-btn" onclick="selectMethod(3)" id="method-3">
-                        <strong>Méthode 3</strong><br>
-                        <small>Articles attachés</small>
-                    </button>
                     <button class="method-btn" onclick="selectMethod(4)" id="method-4">
-                        <strong>Méthode 4</strong><br>
+                        <strong>Méthode 2</strong><br>
                         <small>BPE (Réaliste)</small>
                     </button>
                 </div>
@@ -285,8 +277,6 @@
             <p><strong>🔄 Différentes approches de tokenisation :</strong></p>
             <ul>
                 <li><strong>Méthode 1 - Séparation stricte :</strong> Chaque mot et symbole devient un token séparé (16 tokens)</li>
-                <li><strong>Méthode 2 - Ponctuation attachée :</strong> La ponctuation s'attache au mot précédent (13 tokens)</li>
-                <li><strong>Méthode 3 - Articles attachés :</strong> Les articles se rattachent aux noms qu'ils précèdent (12 tokens)</li>
                 <li><strong>Méthode 4 - BPE :</strong> Sous-mots basés sur les paires de caractères fréquentes (19 tokens)</li>
             </ul>
 
