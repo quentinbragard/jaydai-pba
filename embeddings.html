@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedding 3D - Démonstration Interactive</title>
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico">
+    <title>3D Embeddings - Interactive Demo</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
     <style>
         body {
@@ -24,9 +25,22 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        .logo {
-            max-height: 80px;
-            margin-bottom: 15px;
+        .logo-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .logo-banner img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+        }
+        .brand-separator {
+            font-size: 48px;
+            color: #4f46e5;
         }
         h1 {
             color: #333;
@@ -185,6 +199,14 @@
             border-radius: 5px;
             font-size: 12px;
         }
+        @media (max-width: 1024px) {
+            .logo-banner img {
+                height: 60px;
+            }
+            .brand-separator {
+                font-size: 40px;
+            }
+        }
         @media (max-width: 768px) {
             .controls-row {
                 grid-template-columns: 1fr;
@@ -193,14 +215,38 @@
             .coordinates {
                 grid-template-columns: 1fr 1fr 1fr;
             }
+            .logo-banner {
+                gap: 15px;
+            }
+            .logo-banner img {
+                height: 50px;
+            }
+            .brand-separator {
+                font-size: 32px;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-banner {
+                gap: 12px;
+            }
+            .logo-banner img {
+                height: 40px;
+            }
+            .brand-separator {
+                font-size: 26px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://vetoswvwgsebhxetqppa.supabase.co/storage/v1/object/public/images//full-logo-dark.png" alt="Jaydai Logo" class="logo">
-            <h1>🎯 Démonstration Interactive - Embeddings 3D</h1>
+            <div class="logo-banner">
+                <img src="public/jaydai_logo.png" alt="Jaydai logo">
+                <span class="brand-separator">×</span>
+                <img src="public/bridor_logo.png" alt="Bridor logo">
+            </div>
+            <h1>🎯 Interactive 3D Embeddings</h1>
         </div>
         
         <div class="main-content">
@@ -209,23 +255,23 @@
             <div class="controls">
                 <div class="controls-row">
                     <div class="input-group">
-                        <label for="word-input">Mot :</label>
-                        <input type="text" id="word-input" placeholder="Ex: maison, voiture...">
+                        <label for="word-input">Word:</label>
+                        <input type="text" id="word-input" placeholder="e.g., draft, polish, automation">
                     </div>
                     
                     <div class="input-group">
-                        <label>Coordonnées:</label>
+                        <label>Coordinates:</label>
                         <div class="coordinates">
                             <div>
-                                <div class="coordinate-label">Chat</div>
+                                <div class="coordinate-label">Create</div>
                                 <input type="number" id="x-input" min="0" max="1" step="0.1" value="0.5">
                             </div>
                             <div>
-                                <div class="coordinate-label">Enfant</div>
+                                <div class="coordinate-label">Professional</div>
                                 <input type="number" id="y-input" min="0" max="1" step="0.1" value="0.5">
                             </div>
                             <div>
-                                <div class="coordinate-label">Adulte</div>
+                                <div class="coordinate-label">Computer</div>
                                 <input type="number" id="z-input" min="0" max="1" step="0.1" value="0.5">
                             </div>
                         </div>
@@ -233,21 +279,21 @@
                     
                     <div class="input-group">
                         <label>&nbsp;</label>
-                        <button class="btn btn-primary" onclick="addWord()">🎯 Ajouter</button>
+                        <button class="btn btn-primary" onclick="addWord()">🎯 Add Word</button>
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 20px; align-items: flex-start;">
                     <div style="flex: 2;">
-                        <h4>📝 Mots actuels :</h4>
+                        <h4>📝 Current Words:</h4>
                         <div class="word-list" id="word-list">
-                            <!-- Les mots seront ajoutés ici dynamiquement -->
+                            <!-- Words will be added here dynamically -->
                         </div>
                     </div>
                     <div style="flex: 1; text-align: center;">
                         <h4>&nbsp;</h4>
                         <button class="btn btn-danger" onclick="clearAll()" style="width: 100%;">
-                            🗑️ Tout effacer
+                            🗑️ Clear All
                         </button>
                     </div>
                 </div>
@@ -257,38 +303,38 @@
         <div class="legend">
             <div class="legend-item">
                 <div class="color-dot" style="background-color: #4A90E2;"></div>
-                <span>Points ajoutés</span>
+                <span>Added points</span>
             </div>
         </div>
 
         <div class="explanation">
-            <h3>💡 Comprendre les Embeddings</h3>
-            <p>Les embeddings sont des <span class="highlight">représentations numériques de mots ou concepts</span> dans un espace vectoriel multidimensionnel. Chaque mot devient un point dans cet espace, où la position encode sa signification sémantique.</p>
+            <h3>💡 Understanding Embeddings</h3>
+            <p>Embeddings are <span class="highlight">numeric representations of words or concepts</span> in a multi-dimensional vector space. Each word becomes a point whose position encodes semantic meaning.</p>
             
-            <p><strong>🎯 Principes clés des embeddings :</strong></p>
+            <p><strong>🎯 Key principles of embeddings:</strong></p>
             <ul>
-                <li><strong>Proximité sémantique :</strong> Les mots similaires sont proches dans l'espace ("chien" et "chiot")</li>
-                <li><strong>Relations conceptuelles :</strong> Une direction vectorielle peut représenter une relation logique ou analogique. Exemple célèbre : roi - homme + femme ≈ reine</li>
-                <li><strong>Dimensions sémantiques :</strong> Chaque axe peut représenter un concept (Chat, Enfant, Adulte)</li>
-                <li><strong>Apprentissage automatique :</strong> Ces positions sont apprises à partir de grandes quantités de texte</li>
+                <li><strong>Semantic proximity:</strong> Similar words cluster together ("email" and "message")</li>
+                <li><strong>Conceptual relationships:</strong> Vector directions capture logic or analogies. Classic example: king - man + woman ≈ queen</li>
+                <li><strong>Semantic dimensions:</strong> Each axis can represent a concept (Create, Professional, Computer)</li>
+                <li><strong>Machine learning:</strong> Positions are learned from large volumes of text</li>
             </ul>
 
-            <p><strong>🚀 Applications pratiques :</strong> Les embeddings permettent aux IA de comprendre les nuances du langage, faire des analogies, et traiter des mots jamais vus en les positionnant près de mots similaires connus !</p>
+            <p><strong>🚀 Practical applications:</strong> Embeddings let AI understand nuances, make analogies, and reason about new words by placing them near related concepts.</p>
         </div>
     </div>
 
     <script>
-        // Données initiales
+        // Initial data
         let data = [
-            {word: 'chien', x: 0.4, y: 0.3, z: 0.6},
-            {word: 'chaton', x: 0.7, y: 0.5, z: 0.1},
-            {word: 'enfant', x: 0, y: 1, z: 0},
+            {word: 'help', x: 0.7, y: 0.5, z: 0.3},
+            {word: 'write', x: 0.9, y: 0.6, z: 0.2},
+            {word: 'email', x: 0.6, y: 0.8, z: 0.7},
         ];
 
-        // Couleur unique pour tous les points
+        // Single color for all points
         const pointColor = '#4A90E2';
 
-        // Fonction pour mettre à jour le graphique
+        // Update the chart
         function updatePlot() {
             const trace = {
                 x: data.map(d => d.x),
@@ -312,26 +358,26 @@
                     opacity: 0.8
                 },
                 hovertemplate: '<b>%{text}</b><br>' +
-                              'Chat: %{x}<br>' +
-                              'Enfant: %{y}<br>' +
-                              'Adulte: %{z}<br>' +
+                              'Create: %{x}<br>' +
+                              'Professional: %{y}<br>' +
+                              'Computer: %{z}<br>' +
                               '<extra></extra>'
             };
 
             const layout = {
                 scene: {
                     xaxis: {
-                        title: 'Dimension Chat',
+                        title: 'Create Dimension',
                         titlefont: {size: 12},
                         range: [-0.1, 1.1]
                     },
                     yaxis: {
-                        title: 'Dimension Enfant',
+                        title: 'Professional Dimension',
                         titlefont: {size: 12},
                         range: [-0.1, 1.1]
                     },
                     zaxis: {
-                        title: 'Dimension Adulte',
+                        title: 'Computer Dimension',
                         titlefont: {size: 12},
                         range: [-0.1, 1.1]
                     },
@@ -355,7 +401,7 @@
             updateWordList();
         }
 
-        // Fonction pour ajouter un mot
+        // Add a word
         function addWord() {
             const word = document.getElementById('word-input').value.trim();
             const x = parseFloat(document.getElementById('x-input').value);
@@ -363,37 +409,37 @@
             const z = parseFloat(document.getElementById('z-input').value);
 
             if (!word) {
-                alert('⚠️ Veuillez entrer un mot');
+                alert('⚠️ Please enter a word');
                 return;
             }
 
             if (data.some(d => d.word.toLowerCase() === word.toLowerCase())) {
-                alert('⚠️ Ce mot existe déjà');
+                alert('⚠️ That word is already in the list');
                 return;
             }
 
             if (isNaN(x) || isNaN(y) || isNaN(z)) {
-                alert('⚠️ Veuillez entrer des coordonnées valides');
+                alert('⚠️ Please enter valid coordinates');
                 return;
             }
 
             data.push({word, x, y, z});
             updatePlot();
 
-            // Réinitialiser le formulaire
+            // Reset the form
             document.getElementById('word-input').value = '';
             document.getElementById('x-input').value = '0.5';
             document.getElementById('y-input').value = '0.5';
             document.getElementById('z-input').value = '0.5';
         }
 
-        // Fonction pour supprimer un mot
+        // Remove a word
         function removeWord(word) {
             data = data.filter(d => d.word !== word);
             updatePlot();
         }
 
-        // Fonction pour mettre à jour la liste des mots
+        // Update the word list
         function updateWordList() {
             const wordList = document.getElementById('word-list');
             wordList.innerHTML = '';
@@ -404,7 +450,7 @@
                 div.innerHTML = `
                     <span>
                         <div class="color-dot" style="background-color: ${pointColor};"></div>
-                        <strong>${item.word}</strong> (Chat: ${item.x}, Enfant: ${item.y}, Adulte: ${item.z})
+                        <strong>${item.word}</strong> (Create: ${item.x}, Professional: ${item.y}, Computer: ${item.z})
                     </span>
                     <button class="btn btn-danger" onclick="removeWord('${item.word}')">✖</button>
                 `;
@@ -412,22 +458,22 @@
             });
         }
 
-        // Fonction pour tout effacer
+        // Remove all words
         function clearAll() {
-            if (confirm('🗑️ Êtes-vous sûr de vouloir supprimer tous les mots ?')) {
+            if (confirm('🗑️ Remove all words from the plot?')) {
                 data = [];
                 updatePlot();
             }
         }
 
-        // Permettre l'ajout avec la touche Entrée
+        // Allow adding with the Enter key
         document.getElementById('word-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 addWord();
             }
         });
 
-        // Initialisation
+        // Initialization
         updatePlot();
     </script>
 </body>
