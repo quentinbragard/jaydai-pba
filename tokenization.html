@@ -268,7 +268,7 @@
         <div class="demo-section">
             <h2 class="section-title">📝 Prompt Example</h2>
             <div class="original-text">
-                "Help me to write a proffessional email without mistakes"
+                "Help me to write a professional email without mistakes"
             </div>
         </div>
 
@@ -328,29 +328,29 @@
     </div>
 
     <script>
-        const originalText = "Help me to write a proffessional email without mistakes";
+        const originalText = "Help me to write a professional email without mistakes";
         
         // Definition of the 4 tokenization methods
         const tokenizationMethods = {
             1: {
                 name: "Word level",
                 description: "Every word is its own token",
-                tokens: ["Help", "me", "to", "write", "a", "proffessional", "email", "without", "mistakes"]
+                tokens: ["Help", "me", "to", "write", "a", "professional", "email", "without", "mistakes"]
             },
             2: {
                 name: "Helper words attached",
                 description: "Keeps helper words attached to the following word",
-                tokens: ["Help", "me", "to write", "a", "proffessional email", "without", "mistakes"]
+                tokens: ["Help", "me", "to write", "a", "professional email", "without", "mistakes"]
             },
             3: {
                 name: "Phrase grouping",
                 description: "Groups key phrases together for context",
-                tokens: ["Help me", "to", "write a", "proffessional email", "without mistakes"]
+                tokens: ["Help me", "to", "write a", "professional email", "without mistakes"]
             },
             4: {
                 name: "BPE (Byte Pair Encoding)",
                 description: "Subword pieces built from frequent character pairs",
-                tokens: ["Help", "me", "to", "write", "a", "pro", "ff", "essional", "email", "without", "mist", "akes"]
+                tokens: ["Help", "me", "to", "write", "a", "prof", "essional", "email", "with", "out", "mist", "akes"]
             }
         };
 
